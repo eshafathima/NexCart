@@ -1,13 +1,15 @@
 {% load static %}
-
+<div class="small container single-product">
 <div class="col-2">
-                <p>Home / T-Shirt</p>
-                <h1>Red Printed T-Shirt by HRX</h1>
-                <h4>$50.00</h4>
+                <p>Home / </p>
+                <h1>{{ product.title }}</h1>
+              <img src="{{ product.image.url }}" width="500px">
+
+                <h4>${{ Product.price}}</h4>
                 <select>
                     <option>Select Size</option>
                     <option>XXL</option>
-                    <option>XL</option>
+                    <ption>XL</option>
                     <option>L</option>
                     <option>M</option>
                     <option>S</option>
@@ -17,8 +19,7 @@
 
                 <h3>Product Details <i class="fa fa-indent"></i></h3>
                 <br>
-                <p>Give your summer wardrobe a style upgrade with the HRX Men's Active T-Shirt. Team it with a pair of
-                    shorts for your morning workout or a denims for an evening out with the guys.</p>
+                <p>{{ product.description }}</p>
             </div>
             <div class="small-container">
         <div class="row row-2">
@@ -77,4 +78,5 @@
                 <p>$50.00</p>
             </div>
         </div>
+    </div>
     </div>
