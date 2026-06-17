@@ -498,4 +498,13 @@ form a{
     .cart-info p{
         display: none;
     }
+    
+}
+.error-container{
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #ffe5e5;
+        color: #d8000c;
+        border: 1px solid #d8000c;
+        border-radius: 5px;
 }
