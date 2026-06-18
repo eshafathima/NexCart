@@ -20,4 +20,4 @@ class Order(models.Model):
 class orderedItem(models.Model):
     product=models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True, related_name='added_cart')
     quantity=models.IntegerField(default=1)
-    owner=models.ForeignKey('orders.order', on_delete=models.CASCADE, related_name='added_items')
+    owner=models.ForeignKey('orders.Order', on_delete=models.CASCADE, related_name='added_items')

@@ -1,27 +1,27 @@
 {% load static %}
 <div class="small-container cart-page">
         <table>
-            {% if cart %}
+            {% if is_authenticated and cart %}
             <tbody><tr>
                 <th>Product</th>
                 <th>Quantity</th>
                 <th>Subtotal</th>
             </tr>
-            {% for item in cart.added_items.all %}
+     {% for item in cart.added_items.all %}
             <tr>
                 <td>
                     <div class="cart-info">
-                        <img src="{{ orderedItem.Product.image.url }}">
+                        <img src="{{ item.product.image.url }}">
                         <div>
-                            <p>"{{ item.product.title }}"</p>
-                            <small> Price:$"{{item.product.price }}"</small>
+                            <p>{{ item.product.title }}</p>
+                            <small>Price: ${{ item.product.price }}</small>
                             <br>
                             <a href="">Remove</a>
                         </div>
                     </div>
                 </td>
-                <td><input type="number" disabled value="{{ orderedItem.product.quantity }}"></td>
-                <td>$"{{ item.product.price }}"</td>
+                <td><input type="number" disabled value="{{ item.quantity }}"></td>
+                <td>${{ item.product.price }}</td>
             </tr>
  {% endfor %}
         </tbody></table>
