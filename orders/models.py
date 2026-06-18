@@ -18,6 +18,17 @@ class Order(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
 class orderedItem(models.Model):
-    product=models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True, related_name='added_cart')
-    quantity=models.IntegerField(default=1)
-    owner=models.ForeignKey('orders.Order', on_delete=models.CASCADE, related_name='added_items')
+    product = models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True, related_name='added_cart')
+    quantity = models.IntegerField(default=1)
+    owner = models.ForeignKey('orders.Order', on_delete=models.CASCADE, related_name='added_items')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'owner'], name='unique_cart_item')
+        ]
+
+    @property
+    def subtotal(self):
+        if not self.product:
+            return 0
+        return self.product.price * self.quantity
