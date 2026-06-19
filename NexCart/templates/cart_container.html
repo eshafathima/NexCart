@@ -15,7 +15,7 @@
                             <p>{{ item.product.title }}</p>
                             <small>Price: ${{ item.product.price }}</small>
                             <br>
-                            <a href="">Remove</a>
+                            <a href="{% url 'remove' item.id %}">Remove</a>
                         </div>
                     </div>
                 </td>
@@ -38,7 +38,12 @@
                     <td>Total</td>
                     <td>${{ cart_total }}</td>
                 </tr>
-                <tr><td colspan="1"></td><td><button>Confirm Order</button></td></tr>
+                <tr><td colspan="1"></td><td>
+                    <form method="post" action="{%  url 'checkout' %}">
+                     {% csrf_token %}
+                        <input type="hidden" name="total" value="{{ cart_total }}">
+                    <button class ="btn" type="checkout">Confirm Order</button></td></tr>
+                    </form>
             </tbody></table>
             
         </div>

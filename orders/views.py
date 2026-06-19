@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Order,orderedItem
 from products.models import Product
 from customer.models import Customer
+from django.contrib import messages
 # Create your views here.
 def show_cart(request):
     user = request.user
@@ -24,6 +25,27 @@ def show_cart(request):
         'cart_total': total,
     }
     return render(request, 'cart.html', context)
+def checkout(request):
+    try:
+        if request.method == 'POST':
+            user = request.user
+            customer = user.customer_profile
+            cart_total=float(request.POST.get('total'))
+            order_obj=Order.objects.get(owner=customer,order_status=Order.CART_STAGE)
+           
+            if order_obj:
+                order_obj.order_status=Order.ORDER_CONFIRMED
+                order_obj.price=cart_total
+                order_obj.save()
+                messages.success(request,"Your order is confirmed. Your item will be delivered in 2 days.")
+        else:
+            messages.error(request," No item in cart.")
+    except Exception as e:
+            messages.error(request," No item in cart.")
+    return  redirect('cart')
+
+
+
 
 def add_to_cart(request):
     if request.method == 'POST':
@@ -57,4 +79,9 @@ def add_to_cart(request):
             ordered_item.quantity += quantity
             ordered_item.save()
 
+    return redirect('cart')
+def removefromcart(request,pk):
+    item=orderedItem.objects.get(pk=pk)
+    if item:
+        item.delete()
     return redirect('cart')
