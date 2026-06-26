@@ -3,11 +3,13 @@ from .models import Product
 from django.core.paginator import Paginator
 # Create your views here.
 def index(request):
-    featured_product=Product.objects.order_by('priority')[:2]
-    latest_product=Product.objects.order_by('-priority')[:3]
-    context={'featured' :featured_product,
-             'latest':latest_product }
-    return render(request,'index.html',context)
+    featured_product = Product.objects.filter(delete_status=Product.LIVE).order_by('priority')[:2]
+    latest_product = Product.objects.filter(delete_status=Product.LIVE).order_by('-created_at')[:3]
+    context = {
+        'featured': featured_product,
+        'latest': latest_product,
+    }
+    return render(request, 'index.html', context)
 
 def list_product(request):
     """returns product list page"""

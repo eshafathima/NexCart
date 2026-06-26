@@ -1,0 +1,15 @@
+{% extends 'blank_layout.html' %}
+{% load static %}
+{% block content %}
+ {% if messages %}
+                <div class="error-container">
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% else  %}
+    {% include 'order_container.html' %}
+    {% endif %}
+{% endblock content %}

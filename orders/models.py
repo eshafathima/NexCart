@@ -10,7 +10,7 @@ class Order(models.Model):
     ORDER_PROCESSED=2
     ORDER_DELIVERED=3
     ORDER_REJECTED=4
-    STATUS_CHOICE=((CART_STAGE,"CART_STAGE"), (ORDER_PROCESSED,"ORDER_PROCESSED"), (ORDER_DELIVERED,"ORDER_DELIVERED"), (ORDER_REJECTED,"ORDER_REJECTED"))
+    STATUS_CHOICE=((CART_STAGE,"CART_STAGE"), (ORDER_CONFIRMED,"ORDER_CONFIRMED"), (ORDER_PROCESSED,"ORDER_PROCESSED"), (ORDER_DELIVERED,"ORDER_DELIVERED"), (ORDER_REJECTED,"ORDER_REJECTED"))
     order_status=models.IntegerField(choices=STATUS_CHOICE,default=CART_STAGE)
     owner=models.ForeignKey('customer.Customer', on_delete=models.SET_NULL, null=True, related_name='cart_owner')
     price=models.ForeignKey('products.Product',on_delete=models.SET_NULL, null=True)
@@ -19,6 +19,11 @@ class Order(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
     def __str__(self):
         return "order-{}-{}".format(self.id,self.owner.user.username)
+
+    @property
+    def total_price(self):
+        return sum(item.subtotal for item in self.added_items.all())
+
 class orderedItem(models.Model):
     product = models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True, related_name='added_cart')
     quantity = models.IntegerField(default=1)

@@ -1,12 +1,28 @@
-from django.shortcuts import render,redirect
-from .models import Order,orderedItem
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Order, orderedItem
 from products.models import Product
 from customer.models import Customer
 from django.contrib import messages
-# Create your views here.
+
+
+def get_customer_profile(user):
+    if not user.is_authenticated:
+        return None
+    customer, created = Customer.objects.get_or_create(
+        user=user,
+        defaults={
+            'address': '',
+            'phone': 0,
+        }
+    )
+    return customer
+
+
+@login_required(login_url='home')
 def show_cart(request):
-    user = request.user
-    customer = request.user.customer_profile
+    customer = get_customer_profile(request.user)
     cart_obj, created = Order.objects.get_or_create(
         owner=customer,
         order_status=Order.CART_STAGE
@@ -25,32 +41,54 @@ def show_cart(request):
         'cart_total': total,
     }
     return render(request, 'cart.html', context)
+
+@login_required(login_url='account')
+
+def show_orders(request):
+    user=request.user
+    customer = get_customer_profile(request.user)
+    all_orders=Order.objects.filter(owner=customer).exclude(order_status=Order.CART_STAGE)
+    context={'orders':all_orders}
+    return render(request, 'orders.html', context)
+
+
+@login_required(login_url='account')
+def view_orders(request):
+    user=request.user
+    customer = get_customer_profile(request.user)
+   
+
+   
+    
+    return render(request, 'cart.html', context)
+
+
+
+@login_required(login_url='home')
 def checkout(request):
     try:
         if request.method == 'POST':
-            user = request.user
-            customer = user.customer_profile
-            cart_total=float(request.POST.get('total'))
-            order_obj=Order.objects.get(owner=customer,order_status=Order.CART_STAGE)
-           
+            customer = get_customer_profile(request.user)
+            cart_total = float(request.POST.get('total') or 0)
+            order_obj = Order.objects.get(owner=customer, order_status=Order.CART_STAGE)
+
             if order_obj:
-                order_obj.order_status=Order.ORDER_CONFIRMED
-                order_obj.price=cart_total
+                order_obj.order_status = Order.ORDER_CONFIRMED
                 order_obj.save()
-                messages.success(request,"Your order is confirmed. Your item will be delivered in 2 days.")
+                messages.success(request, "Your order is confirmed. Your item will be delivered in 2 days.")
         else:
-            messages.error(request," No item in cart.")
-    except Exception as e:
-            messages.error(request," No item in cart.")
-    return  redirect('cart')
+            messages.error(request, "No item in cart.")
+    except Order.DoesNotExist:
+        messages.error(request, "No item in cart.")
+    except Exception:
+        messages.error(request, "Something went wrong. Please try again.")
+    return redirect('cart')
 
 
-
-
+@login_required(login_url='home')
 def add_to_cart(request):
     if request.method == 'POST':
-        user = request.user
-        customer = user.customer_profile
+        customer = get_customer_profile(request.user)
         product_id = request.POST.get('product_id')
         try:
             quantity = int(request.POST.get('quantity', 1))
@@ -80,8 +118,14 @@ def add_to_cart(request):
             ordered_item.save()
 
     return redirect('cart')
-def removefromcart(request,pk):
-    item=orderedItem.objects.get(pk=pk)
-    if item:
+
+
+@login_required(login_url='home')
+def removefromcart(request, pk):
+    try:
+        item = orderedItem.objects.get(pk=pk)
         item.delete()
+    except orderedItem.DoesNotExist:
+        pass
     return redirect('cart')
+

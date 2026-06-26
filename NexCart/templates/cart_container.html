@@ -39,10 +39,10 @@
                     <td>${{ cart_total }}</td>
                 </tr>
                 <tr><td colspan="1"></td><td>
-                    <form method="post" action="{%  url 'checkout' %}">
+                    <form method="post" action="{% url 'checkout' %}">
                      {% csrf_token %}
                         <input type="hidden" name="total" value="{{ cart_total }}">
-                    <button class ="btn" type="checkout">Confirm Order</button></td></tr>
+                    <button class ="btn" type="submit">Confirm Order</button></td></tr>
                     </form>
             </tbody></table>
             

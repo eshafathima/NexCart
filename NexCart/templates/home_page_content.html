@@ -22,16 +22,21 @@
     <div class="small-container">
         <h2 class="title">Featured Products</h2>
         <div class="row">
-            {% for i in featured %} 
-          <div class="col-4"><h1>uuu</h1>
-        <a href="{% url 'product_details' i.id  %}">
-            <img src="{{ i.image.url }}">
-        </a>
-
-        <h4>{{ i.title }}</h4>
-        <p>{{ i.price }}</p>
-    </div>
-            {% endfor %}
+            {% if featured %}
+                {% for product in featured %}
+                    <div class="col-4">
+                        <a href="{% url 'product_details' product.id %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                        </a>
+                        <h4>{{ product.title }}</h4>
+                        <p>${{ product.price }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p>No featured products available.</p>
+                </div>
+            {% endif %}
             
            
         </div>
@@ -42,21 +47,21 @@
           
         <h2 class="title">Latest Products</h2>
         <div class="row">
-            {% for i in latest %} 
-          <div class="col-4"><h1>uuu</h1>
-        <a href="{% url 'product_details' i.id  %}">
-            <img src="{{ i.image.url }}">
-        </a>
-
-        <h4>{{ i.title }}</h4>
-        <p>{{ i.price }}</p>
-    </div>
-            {% endfor %}
-            
-           
+            {% if latest %}
+                {% for product in latest %}
+                    <div class="col-4">
+                        <a href="{% url 'product_details' product.id %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                        </a>
+                        <h4>{{ product.title }}</h4>
+                        <p>${{ product.price }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p>No latest products available.</p>
+                </div>
+            {% endif %}
         </div>
            
-        </div>
-       
-        </div>
-    </div>
+        
